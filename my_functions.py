@@ -70,3 +70,25 @@ def send_mail(send_from,send_to,cc_lst,subject,text,server,username='',password=
     smtp.login(username,password)
     smtp.sendmail(send_from, [send_to] + cc_lst, msg.as_string())
     smtp.quit()
+    
+    def casech_df(df, colname,ch = 'lower'):
+    colname = [colname] if type(colname) == str else colname
+    if ch.lower() == 'lower':
+        df[colname] = df[colname].applymap(lambda x: x.lower() if pd.notnull(x) else x)
+        return df
+    elif ch.lower() == 'upper':
+        df[colname] = df[colname].applymap(lambda x: x.upper() if pd.notnull(x) else x)
+        return df
+    else:
+        return df
+    
+def regex_replace_df(df,colname,dict_regex):
+    colname = [colname] if type(colname) == str else colname
+    for i, j in dict_regex.iteritems():
+        df[colname] = df[colname].applymap(lambda x :re.sub(pattern = r'%s'%i,repl = j,string = x) if pd.notnull(x) else x)
+    return  df
+    
+def unicode_clean(df,colname,encoding = 'ascii'):
+    colname = [colname] if type(colname) == str else colname
+    df[colname] = df[colname].applymap(lambda x: x.encode(encoding, 'ignore').decode("utf-8"))
+    return df
